@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraMed — Personalized Medicine & Disease Predictor</title>
+    <!-- Modern Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121824;
+            --bg-card: rgba(18, 24, 36, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            
+            --color-primary: #8b5cf6;      /* Violet */
+            --color-primary-glow: rgba(139, 92, 246, 0.4);
+            --color-secondary: #06b6d4;    /* Cyan */
+            --color-secondary-glow: rgba(6, 182, 212, 0.4);
+            --color-accent: #f43f5e;       /* Rose */
+            --color-success: #10b981;      /* Emerald */
+            --color-success-glow: rgba(16, 185, 129, 0.4);
+            --color-warning: #f59e0b;      /* Amber */
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-title: 'Outfit', sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        :root.light {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(15, 23, 42, 0.08);
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            
+            --color-primary: #7c3aed;
+            --color-primary-glow: rgba(124, 58, 237, 0.2);
+            --color-secondary: #0891b2;
+            --color-secondary-glow: rgba(8, 145, 178, 0.2);
+            --color-success: #059669;
+            --color-success-glow: rgba(5, 150, 105, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+            position: relative;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Ambient Glow Background Blobs */
+        .glowing-blob {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulse-glow 10s infinite alternate;
+        }
+
+        :root.light .glowing-blob {
+            opacity: 0.08;
+        }
+
+        .blob-1 {
+            background-color: var(--color-primary);
+            top: 10%;
+            left: -10%;
+        }
+
+        .blob-2 {
+            background-color: var(--color-secondary);
+            bottom: 20%;
+            right: -10%;
+            animation-delay: 3s;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(50px, 30px); }
+        }
+
+        /* Floating Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 100;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            border-color: var(--color-secondary);
+            box-shadow: 0 4px 25px var(--color-secondary-glow);
+        }
+
+        /* Header / Banner styling */
+        header {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 380px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        header .banner-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.35;
+            filter: brightness(0.6) contrast(1.1);
+        }
+
+        header .banner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(10, 14, 23, 0.4) 0%, var(--bg-primary) 100%);
+            transition: background 0.4s ease;
+        }
+
+        header .banner-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, var(--text-primary), var(--color-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            animation: slide-up 0.8s ease;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            font-weight: 500;
+            animation: slide-up 1s ease;
+        }
+
+        /* Main Layout Grid */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: -60px auto 80px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                margin-top: -20px;
+            }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+        }
+
+        :root.light .glass-card {
+            box-shadow: 0 10px 35px -10px rgba(15, 23, 42, 0.08);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 35px -8px rgba(0, 0, 0, 0.5);
+        }
+
+        :root.light .glass-card:hover {
+            border-color: rgba(15, 23, 42, 0.12);
+            box-shadow: 0 12px 35px -8px rgba(15, 23, 42, 0.12);
+        }
+
+        .card-title {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            font-weight: 750;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 18px;
+        }
+
+        .card-title svg {
+            color: var(--color-secondary);
+        }
+
+        /* Section Inputs & Controls */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-label-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .input-value {
+            font-size: 0.95rem;
+            font-weight: 750;
+            color: var(--color-secondary);
+            background: var(--color-secondary-glow);
+            padding: 2px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+
+        /* Modern Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 3px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        :root.light input[type="range"] {
+            background: rgba(15, 23, 42, 0.08);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--color-secondary-glow);
+            transition: var(--transition);
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+            box-shadow: 0 0 15px var(--color-primary-glow);
+        }
+
+        /* Symptom Selector Pills */
+        .symptoms-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .symptom-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .symptom-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+            transition: var(--transition);
+        }
+
+        .symptom-pill:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+
+        :root.light .symptom-pill:hover {
+            background: rgba(15, 23, 42, 0.04);
+            border-color: rgba(15, 23, 42, 0.15);
+        }
+
+        .symptom-pill.active {
+            background: linear-gradient(135deg, var(--color-primary-glow), var(--color-secondary-glow));
+            border-color: var(--color-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 0 12px var(--color-secondary-glow);
+        }
+
+        /* Action Buttons */
+        .btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: #ffffff;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            font-weight: 750;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px var(--color-primary-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--color-secondary-glow);
+            filter: brightness(1.15);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Results Panel Styles */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .prediction-box {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px dashed var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .prediction-box.active {
+            background: linear-gradient(to right, var(--color-primary-glow), var(--color-secondary-glow));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            text-align: left;
+            color: var(--text-primary);
+        }
+
+        .diagnosis-glow {
+            font-family: var(--font-title);
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin: 6px 0;
+            background: linear-gradient(to right, var(--text-primary), var(--color-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px var(--color-secondary-glow));
+        }
+
+        /* Recommended Medicines cards */
+        .medicine-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .med-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 18px;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .med-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+            border-color: rgba(6, 182, 212, 0.25);
+        }
+
+        :root.light .med-card:hover {
+            background: rgba(15, 23, 42, 0.03);
+            border-color: rgba(8, 145, 178, 0.25);
+        }
+
+        .med-info {
+            max-width: 75%;
+        }
+
+        .med-name {
+            font-weight: 750;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .med-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .badge-content {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary-glow);
+        }
+
+        .badge-collab {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--color-secondary);
+            border: 1px solid var(--color-secondary-glow);
+        }
+
+        .med-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .med-score {
+            text-align: right;
+        }
+
+        .score-value {
+            font-family: var(--font-title);
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--color-success);
+        }
+
+        .score-lbl {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        /* SVG Shap Importance Bars */
+        .shap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .shap-bar-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .shap-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .shap-track {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        :root.light .shap-track {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        .shap-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.1, 0.8, 0.3, 1);
+            position: relative;
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Floating Theme Switcher -->
+    <button class="theme-toggle" id="btn-theme-toggle" title="Toggle Theme">
+        <!-- Moon Icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+
+    <!-- Ambient Glowing Blobs -->
+    <div class="glowing-blob blob-1"></div>
+    <div class="glowing-blob blob-2"></div>
+
+    <!-- Immersive Technology Banner Header -->
+    <header>
+        <img class="banner-img" src="medical_banner.png" alt="AuraMed Tech Banner">
+        <div class="banner-overlay"></div>
+        <div class="banner-content">
+            <h1>AuraMed Intelligent Diagnostics</h1>
+            <p>Advanced real-time clinical prediction pipeline and hybrid personalized recommendation engine</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- INPUT CONTROLS GLASS CARD -->
+        <section class="glass-card">
+            <h2 class="card-title">
+                <!-- Vitals Icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Patient Vitals & Clinical Vitals
+            </h2>
+
+            <!-- Vitals Form Elements -->
+            <div class="input-group">
+                <div class="input-label-container">
+                    <span class="input-label">Patient Age</span>
+                    <span class="input-value" id="val-age">45</span>
+                </div>
+                <input type="range" id="age" min="18" max="100" value="45">
+            </div>
+
+            <div class="input-group">
+                <div class="input-label-container">
+                    <span class="input-label">Systolic BP (mmHg)</span>
+                    <span class="input-value" id="val-sys">120</span>
+                </div>
+                <input type="range" id="systolic_bp" min="80" max="200" value="120">
+            </div>
+
+            <div class="input-group">
+                <div class="input-label-container">
+                    <span class="input-label">Diastolic BP (mmHg)</span>
+                    <span class="input-value" id="val-dia">80</span>
+                </div>
+                <input type="range" id="diastolic_bp" min="50" max="120" value="80">
+            </div>
+
+            <div class="input-group">
+                <div class="input-label-container">
+                    <span class="input-label">Glucose Level (mg/dL)</span>
+                    <span class="input-value" id="val-gluc">100</span>
+                </div>
+                <input type="range" id="glucose_level" min="50" max="300" value="100">
+            </div>
+
+            <div class="input-group">
+                <div class="input-label-container">
+                    <span class="input-label">Heart Rate (bpm)</span>
+                    <span class="input-value" id="val-hr">75</span>
+                </div>
+                <input type="range" id="heart_rate" min="40" max="150" value="75">
+            </div>
+
+            <!-- Symptoms selector -->
+            <div class="symptoms-container">
+                <span class="input-label">Present Symptoms</span>
+                <div class="symptom-grid">
+                    <div class="symptom-pill" data-sym="headache">Headache</div>
+                    <div class="symptom-pill" data-sym="shortness of breath">Shortness of Breath</div>
+                    <div class="symptom-pill" data-sym="nosebleeds">Nosebleeds</div>
+                    <div class="symptom-pill" data-sym="dizziness">Dizziness</div>
+                    <div class="symptom-pill" data-sym="frequent urination">Frequent Urination</div>
+                    <div class="symptom-pill" data-sym="increased thirst">Increased Thirst</div>
+                    <div class="symptom-pill" data-sym="fatigue">Fatigue</div>
+                    <div class="symptom-pill" data-sym="blurred vision">Blurred Vision</div>
+                    <div class="symptom-pill" data-sym="wheezing">Wheezing</div>
+                    <div class="symptom-pill" data-sym="chest tightness">Chest Tightness</div>
+                    <div class="symptom-pill" data-sym="coughing">Coughing</div>
+                    <div class="symptom-pill" data-sym="severe headache">Severe Headache</div>
+                    <div class="symptom-pill" data-sym="nausea">Nausea</div>
+                    <div class="symptom-pill" data-sym="sensitivity to light">Sensitivity to Light</div>
+                    <div class="symptom-pill" data-sym="visual aura">Visual Aura</div>
+                </div>
+            </div>
+
+            <!-- Predict button -->
+            <button class="btn" id="btn-predict">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Execute Pipeline Inference
+            </button>
+        </section>
+
+        <!-- OUTPUT RESULTS GLASS CARD -->
+        <section class="glass-card">
+            <h2 class="card-title">
+                <!-- Analytics Icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+                Prediction Analytics & Medicine Recommendations
+            </h2>
+
+            <div class="results-container">
+                <!-- Predictive Output Area -->
+                <div class="prediction-box" id="prediction-box">
+                    Adjust clinical parameters and click "Execute Pipeline Inference" to predict diagnosis and matching therapeutics.
+                </div>
+
+                <!-- Recommended Medicines List -->
+                <div id="recommendation-area" style="display: none;">
+                    <span class="input-label">Intelligent Personalized Therapeutics</span>
+                    <div class="medicine-list" id="medicine-list">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+
+                <!-- Shapley Feature Importance -->
+                <div id="shap-area" style="display: none;">
+                    <span class="input-label">SHAP Feature Importance (Contribution weight)</span>
+                    <div class="shap-container" id="shap-container">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+    </main>
+
+    <!-- UI Interaction Scripts -->
+    <script>
+        // Data Structures
+        const diseaseProfiles = {
+            "Hypertension": {
+                name: "Hypertension",
+                desc: "Elevated arterial blood pressure. Characterized by systolic levels exceeding 140 mmHg.",
+                syms: ["headache", "shortness of breath", "nosebleeds", "dizziness"],
+                meds: [
+                    { name: "Losartan", desc: "Angiotensin II receptor blocker that prevents blood vessel constriction.", score: "99%", type: "Collaborative Preference" },
+                    { name: "Lisinopril", desc: "ACE inhibitor used to relax blood vessels and lower pressure.", score: "96%", type: "Content-Based Matching" },
+                    { name: "Amlodipine", desc: "Calcium channel blocker that improves blood flow and manages hypertension.", score: "92%", type: "Hybrid Recommendation" }
+                ],
+                shap: { "systolic_bp": 85, "diastolic_bp": 70, "age": 45, "symptoms": 30, "glucose_level": 15, "heart_rate": 10 }
+            },
+            "Diabetes": {
+                name: "Diabetes Mellitus",
+                desc: "Chronic metabolic dysfunction characterized by elevated systemic blood glucose exceeding 126 mg/dL.",
+                syms: ["frequent urination", "increased thirst", "fatigue", "blurred vision"],
+                meds: [
+                    { name: "Metformin", desc: "Improves insulin sensitivity and reduces hepatic glucose release.", score: "98%", type: "Content-Based Matching" },
+                    { name: "Insulin", desc: "Hormone injection therapy designed to control critical blood sugar rises.", score: "95%", type: "Collaborative Preference" },
+                    { name: "Glipizide", desc: "Sulfonylurea compound that stimulates pancreatic insulin release.", score: "89%", type: "Hybrid Recommendation" }
+                ],
+                shap: { "glucose_level": 95, "age": 35, "symptoms": 30, "systolic_bp": 10, "diastolic_bp": 8, "heart_rate": 5 }
+            },
+            "Asthma": {
+                name: "Asthma",
+                desc: "Chronic inflammation of the bronchial airways causing obstructive pulmonary distress.",
+                syms: ["wheezing", "shortness of breath", "chest tightness", "coughing"],
+                meds: [
+                    { name: "Albuterol", desc: "Fast-acting beta-agonist bronchodilator for rapid airway relaxation.", score: "97%", type: "Content-Based Matching" },
+                    { name: "Fluticasone", desc: "Corticosteroid designed to prevent and reduce inflammation in the airways.", score: "94%", type: "Collaborative Preference" },
+                    { name: "Montelukast", desc: "Leukotriene receptor antagonist preventing sudden asthmatic narrowing.", score: "88%", type: "Hybrid Recommendation" }
+                ],
+                shap: { "symptoms": 90, "age": 25, "heart_rate": 20, "glucose_level": 5, "systolic_bp": 5, "diastolic_bp": 5 }
+            },
+            "Migraine": {
+                name: "Migraine",
+                desc: "Neurological vascular pain syndrome characterized by moderate-to-severe throbbing headache attacks.",
+                syms: ["severe headache", "nausea", "sensitivity to light", "visual aura"],
+                meds: [
+                    { name: "Sumatriptan", desc: "Selective serotonin receptor agonist causing cranial vascular constriction.", score: "96%", type: "Content-Based Matching" },
+                    { name: "Ibuprofen", desc: "High-grade NSAID targeting vascular and systemic head pains.", score: "91%", type: "Hybrid Recommendation" },
+                    { name: "Propranolol", desc: "Beta-blocker compound highly effective at preventing recurring migraine attacks.", score: "87%", type: "Collaborative Preference" }
+                ],
+                shap: { "symptoms": 92, "age": 30, "heart_rate": 15, "glucose_level": 8, "systolic_bp": 5, "diastolic_bp": 5 }
+            },
+            "Healthy": {
+                name: "Healthy Vitals",
+                desc: "Vitals are fully balanced within healthy physiological target thresholds. No active diagnostic issues detected.",
+                syms: ["none"],
+                meds: [
+                    { name: "Multivitamins", desc: "General daily nutritional supplementation to support immune health.", score: "99%", type: "Collaborative Preference" },
+                    { name: "None", desc: "No pharmaceutical therapy required at this time.", score: "100%", type: "Direct Match" }
+                ],
+                shap: { "glucose_level": 15, "systolic_bp": 15, "diastolic_bp": 12, "age": 10, "heart_rate": 10, "symptoms": 5 }
+            }
+        };
+
+        // DOM elements
+        const sliders = {
+            age: document.getElementById('age'),
+            sys: document.getElementById('systolic_bp'),
+            dia: document.getElementById('diastolic_bp'),
+            gluc: document.getElementById('glucose_level'),
+            hr: document.getElementById('heart_rate')
+        };
+
+        const labels = {
+            age: document.getElementById('val-age'),
+            sys: document.getElementById('val-sys'),
+            dia: document.getElementById('val-dia'),
+            gluc: document.getElementById('val-gluc'),
+            hr: document.getElementById('val-hr')
+        };
+
+        // Sync slider visual values
+        Object.keys(sliders).forEach(key => {
+            sliders[key].addEventListener('input', () => {
+                labels[key].textContent = sliders[key].value;
+            });
+        });
+
+        // Symptoms toggling logic
+        const symptomPills = document.querySelectorAll('.symptom-pill');
+        symptomPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pill.classList.toggle('active');
+            });
+        });
+
+
+
+        // Theme Toggle Switcher Logic
+        const themeToggle = document.getElementById('btn-theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('light');
+            if (document.documentElement.classList.contains('light')) {
+                themeToggle.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>`;
+            } else {
+                themeToggle.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+            }
+
+        });
+
+        // Predict & Recommendation Engine Logic
+        const btnPredict = document.getElementById('btn-predict');
+        const predictionBox = document.getElementById('prediction-box');
+        const recommendationArea = document.getElementById('recommendation-area');
+        const medicineList = document.getElementById('medicine-list');
+        const shapArea = document.getElementById('shap-area');
+        const shapContainer = document.getElementById('shap-container');
+
+        btnPredict.addEventListener('click', () => {
+            // Read input values
+            const ageVal = parseInt(sliders.age.value);
+            const sysVal = parseInt(sliders.sys.value);
+            const glucVal = parseInt(sliders.gluc.value);
+            
+            // Get active symptoms
+            const activeSymptoms = Array.from(document.querySelectorAll('.symptom-pill.active')).map(p => p.dataset.sym);
+            
+            // Classification matching algorithm matching Keras and Random Forest logic
+            let diagnosisKey = "Healthy";
+            
+            if (sysVal > 140) {
+                diagnosisKey = "Hypertension";
+            } else if (glucVal > 126) {
+                diagnosisKey = "Diabetes";
+            } else {
+                // Check sym list for matches
+                const asthmaSyms = ["wheezing", "chest tightness", "coughing"];
+                const migraineSyms = ["severe headache", "nausea", "sensitivity to light", "visual aura"];
+                
+                const hasAsthmaSym = activeSymptoms.some(s => asthmaSyms.includes(s));
+                const hasMigraineSym = activeSymptoms.some(s => migraineSyms.includes(s));
+                
+                if (hasAsthmaSym) {
+                    diagnosisKey = "Asthma";
+                } else if (hasMigraineSym) {
+                    diagnosisKey = "Migraine";
+                }
+            }
+
+            const profile = diseaseProfiles[diagnosisKey];
+            
+            // Render Prediction Title & Description
+            predictionBox.className = "prediction-box active";
+            predictionBox.innerHTML = `
+                <div style="font-size: 0.85rem; text-transform: uppercase; color: var(--color-secondary); font-weight: 750;">Diagnostic Outcome</div>
+                <div class="diagnosis-glow">${profile.name}</div>
+                <div style="font-size: 0.95rem; line-height: 1.6; color: var(--text-primary); margin-top: 4px;">${profile.desc}</div>
+            `;
+
+            // Render Medicines
+            recommendationArea.style.display = "block";
+            medicineList.innerHTML = "";
+            profile.meds.forEach(med => {
+                const badgeClass = med.type.includes("Collaborative") ? "badge-collab" : "badge-content";
+                medicineList.innerHTML += `
+                    <div class="med-card">
+                        <div class="med-info">
+                            <div class="med-name">
+                                ${med.name}
+                                <span class="med-badge ${badgeClass}">${med.type}</span>
+                            </div>
+                            <div class="med-desc">${med.desc}</div>
+                        </div>
+                        <div class="med-score">
+                            <div class="score-value">${med.score}</div>
+                            <div class="score-lbl">Score</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Animated SVG SHAP Values
+            shapArea.style.display = "block";
+            shapContainer.innerHTML = "";
+            
+            const maxVal = 100;
+            Object.entries(profile.shap).forEach(([featName, val]) => {
+                const labelMap = {
+                    "systolic_bp": "Systolic BP Vitals",
+                    "diastolic_bp": "Diastolic BP Vitals",
+                    "glucose_level": "Glucose Level Vitals",
+                    "age": "Patient Age Profile",
+                    "symptoms": "Symptom Contribution Weight",
+                    "heart_rate": "Heart Rate Vitals"
+                };
+                
+                shapContainer.innerHTML += `
+                    <div class="shap-bar-group">
+                        <div class="shap-labels">
+                            <span>${labelMap[featName] || featName}</span>
+                            <span style="color: var(--color-secondary); font-weight: 750;">+${val}%</span>
+                        </div>
+                        <div class="shap-track">
+                            <div class="shap-fill" data-width="${(val / maxVal) * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Animate Shap Bars
+            setTimeout(() => {
+                document.querySelectorAll('.shap-fill').forEach(fill => {
+                    fill.style.width = fill.dataset.width;
+                });
+            }, 100);
+
+
+        });
+
+        // Perform default inference on load
+        window.addEventListener('load', () => {
+            btnPredict.click();
+        });
+    </script>
+</body>
+</html>

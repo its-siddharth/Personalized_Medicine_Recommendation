@@ -1,0 +1,23 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook Caches
+.ipynb_checkpoints/
+
+# Local model training checkpoint weights
+*.pkl
+!disease_predictor_rf.pkl
+!label_encoder_diag.pkl
+!scaler.pkl
+!tfidf_symptoms.pkl
+
+# IDE files
+.vscode/
+.idea/
