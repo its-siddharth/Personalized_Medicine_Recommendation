@@ -1,6 +1,6 @@
-# AuraMed — Intelligent Diagnostics & Therapeutics Recommendation Platform
+# Personalized_Medicine_Recommendation — Diagnostic & Therapeutics Platform
 
-AuraMed is a highly polished, end-to-end clinical machine learning pipeline and interactive clinic dashboard. It leverages vitals-based diagnostic modeling and a hybrid recommendation engine to predict patient diagnoses and suggest personalized therapeutics.
+Personalized_Medicine_Recommendation is a highly polished, end-to-end clinical machine learning pipeline and interactive clinic dashboard. It leverages vitals-based diagnostic modeling and a hybrid recommendation engine to predict patient diagnoses and suggest personalized therapeutics.
 
 The system is designed with a premium, responsive glassmorphic clinical interface featuring instant diagnostic predictions, custom interactive elements, and a seamless light/dark mode theme controller.
 
@@ -21,7 +21,7 @@ The system is designed with a premium, responsive glassmorphic clinical interfac
 ## 📂 Project Structure
 
 ```text
-AMDOX/
+Personalized_Medicine_Recommendation/
 ├── Personalized_Medicine_Recommendation.ipynb  # Primary diagnostic & recommendation notebook
 ├── run_pipeline.py                             # Clean, robust production ML training pipeline
 ├── index.html                                  # Futuristic patient dashboard (Light/Dark glassmorphism)
@@ -41,8 +41,8 @@ Follow these steps to set up the project locally on your system:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/AMDOX.git
-cd AMDOX
+git clone https://github.com/YOUR_USERNAME/Personalized_Medicine_Recommendation.git
+cd Personalized_Medicine_Recommendation
 ```
 
 ### 2. Activate Virtual Environment
