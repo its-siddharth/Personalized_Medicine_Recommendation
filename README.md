@@ -75,6 +75,8 @@ python -m http.server 8000
 ```
 Open your browser and navigate to: 👉 **[http://localhost:8000](http://localhost:8000)**
 
+Or access the live clinical web application online at: 🌐 **[https://its-siddharth.github.io/Personalized_Medicine_Recommendation/](https://its-siddharth.github.io/Personalized_Medicine_Recommendation/)**
+
 ---
 
 ## 🧠 Core Technology Stack
